@@ -1,0 +1,43 @@
+import React, { Component } from 'react';
+import { Segment, Form, Button } from 'semantic-ui-react';
+
+class EventForm extends Component {
+  render() {
+    return (
+      <Segment>
+        <Form>
+          <Form.Field>
+            <label>Event Title</label>
+            <input placeholder="First Name" />
+          </Form.Field>
+          <Form.Field>
+            <label>Event Date</label>
+            <input type="date" placeholder="Event Date" />
+          </Form.Field>
+          <Form.Field>
+            <label>City</label>
+            <input placeholder="City event is taking place" />
+          </Form.Field>
+          <Form.Field>
+            <label>Venue</label>
+            <input placeholder="Enter the Venue of the event" />
+          </Form.Field>
+          <Form.Field>
+            <label>Hosted By</label>
+            <input placeholder="Enter the name of person hosting" />
+          </Form.Field>
+          <Button.Group widths="6">
+            <Button positive type="submit" fluid>
+              Submit
+            </Button>
+            <Button type="button" fluid>
+              Cancel
+            </Button>
+          </Button.Group>
+        </Form>
+      </Segment>
+    );
+  }
+}
+
+export default EventForm;
