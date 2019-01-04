@@ -8,7 +8,7 @@ const events = [
   {
     id: '1',
     title: 'Trip to Tower of London',
-    date: '2018-03-27T11:00:00+00:00',
+    date: '2018-03-27',
     category: 'culture',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -32,7 +32,7 @@ const events = [
   {
     id: '2',
     title: 'Trip to Punch and Judy Pub',
-    date: '2018-03-28T14:00:00+00:00',
+    date: '2018-03-28',
     category: 'drinks',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -58,12 +58,13 @@ const events = [
 class EventDashboard extends Component {
   state = {
     events: events,
-    showForm: false
+    showForm: false,
+    selectedEvent: null
   };
 
-  showForm = () => this.setState({ showForm: true });
+  showForm = () => this.setState({ showForm: true, selectedEvent: null });
 
-  hideForm = () => this.setState({ showForm: false });
+  hideForm = () => this.setState({ showForm: false, selectedEvent: null });
 
   addNewEvent = newEvent => {
     newEvent.id = cuid();
@@ -72,12 +73,35 @@ class EventDashboard extends Component {
     this.setState({ events, showForm: false });
   };
 
+  handleEventSelected = event => () => {
+    this.setState({
+      selectedEvent: event,
+      showForm: true
+    });
+  };
+
+  handleUpdateEvent = updatedEvent => {
+    const newEvents = this.state.events.map(event =>
+      event.id === updatedEvent.id ? updatedEvent : event
+    );
+    this.setState({ events: newEvents, showForm: false, selectedEvent: null });
+  };
+
+  handleDeleteEvent = eventId => () => {
+    const newEvents = this.state.events.filter(event => event.id !== eventId);
+    this.setState({ events: newEvents });
+  };
+
   render() {
-    const { events, showForm } = this.state;
+    const { events, showForm, selectedEvent } = this.state;
     return (
       <Grid>
         <Grid.Column width="10">
-          <EventList events={events} />
+          <EventList
+            events={events}
+            onEventSelected={this.handleEventSelected}
+            onDeleteEvent={this.handleDeleteEvent}
+          />
         </Grid.Column>
         <Grid.Column width="6">
           <Button positive onClick={this.showForm}>
@@ -87,6 +111,8 @@ class EventDashboard extends Component {
             <EventForm
               hideForm={this.hideForm}
               addNewEvent={this.addNewEvent}
+              selectedEvent={selectedEvent}
+              updateEvent={this.handleUpdateEvent}
             />
           )}
         </Grid.Column>

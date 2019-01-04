@@ -11,8 +11,10 @@ class EventListItem extends Component {
       date,
       venue,
       description,
-      attendees
+      attendees,
+      id
     } = this.props.event;
+    const { onEventSelected, onDeleteEvent } = this.props;
     return (
       <Segment.Group>
         <Segment>
@@ -42,9 +44,23 @@ class EventListItem extends Component {
               ))}
           </List>
         </Segment>
+
         <Segment clearing>
-          <span>{description}</span>
-          <Button as="a" color="teal" floated="right" content="View" />
+          <h5>{description}</h5>
+          <Button
+            as="a"
+            color="red"
+            floated="right"
+            content="Delete"
+            onClick={onDeleteEvent(id)}
+          />
+          <Button
+            as="a"
+            color="teal"
+            floated="right"
+            content="View"
+            onClick={onEventSelected(this.props.event)}
+          />
         </Segment>
       </Segment.Group>
     );
