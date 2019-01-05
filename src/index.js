@@ -3,12 +3,18 @@ import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css';
 import './index.css';
 import App from './app/layout/App';
+import { BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 const rootElement = document.getElementById('root');
 
 const render = () => {
-  ReactDOM.render(<App />, rootElement);
+  ReactDOM.render(
+    <Router>
+      <App />
+    </Router>,
+    rootElement
+  );
 };
 
 if (module.hot) {
