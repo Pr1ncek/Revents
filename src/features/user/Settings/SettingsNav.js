@@ -1,11 +1,37 @@
-import React from 'react'
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { Grid, Header, Menu } from 'semantic-ui-react';
 
 function SettingsNav() {
   return (
-    <div>
-        <h1>PeopleDashboard</h1>
-    </div>
-  )
+    <Grid.Column width={4}>
+      <Menu vertical>
+        <Header icon="user" attached inverted color="grey" content="Profile" />
+        <Menu.Item as={NavLink} to="/settings/basic">
+          Basics
+        </Menu.Item>
+        <Menu.Item as={NavLink} to="/settings/about">
+          About Me
+        </Menu.Item>
+        <Menu.Item as={NavLink} to="/settings/photos">
+          My Photos
+        </Menu.Item>
+      </Menu>
+      <Grid.Row />
+      <Menu vertical>
+        <Header
+          icon="settings"
+          attached
+          inverted
+          color="grey"
+          content="Account"
+        />
+        <Menu.Item to="/settings/account" as={NavLink}>
+          My Account
+        </Menu.Item>
+      </Menu>
+    </Grid.Column>
+  );
 }
 
-export default SettingsNav
+export default SettingsNav;

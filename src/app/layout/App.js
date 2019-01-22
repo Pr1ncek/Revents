@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container } from 'semantic-ui-react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import EventDashboard from '../../features/event/EventDashboard/EventDashboard';
 import Navbar from '../../features/nav/Navbar/Navbar';
 import EventForm from '../../features/event/EventForm/EventForm';
@@ -14,19 +14,30 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <Navbar />
-        <Container className="main">
+        <Switch>
           <Route path="/" exact component={HomePage} />
-          <Route path="/events" exact component={EventDashboard} />
-          <Route path="/event/:id" exact component={EventDetailedPage} />
-          <Route path="/people" exact component={PeopleDashboard} />
-          <Route path="/profile/:id" exact component={UserDetailedPage} />
-          <Route path="/settings" exact component={SettingsDashboard} />
-          <Route path="/createEvent" exact component={EventForm} />
-        </Container>
+        </Switch>
+        <Route
+          path="/(.+)"
+          render={() => (
+            <React.Fragment>
+              <Navbar />
+              <Container className="main">
+                <Switch>
+                  <Route path="/events" component={EventDashboard} />
+                  <Route path="/event/:id" component={EventDetailedPage} />
+                  <Route path="/people" component={PeopleDashboard} />
+                  <Route path="/profile/:id" component={UserDetailedPage} />
+                  <Route path="/settings" component={SettingsDashboard} />
+                  <Route path="/createEvent" component={EventForm} />
+                </Switch>
+              </Container>
+            </React.Fragment>
+          )}
+        />
       </React.Fragment>
     );
-  }
+  }q
 }
 
 export default App;

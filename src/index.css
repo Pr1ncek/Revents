@@ -29,6 +29,7 @@ body {
     rgb(33, 138, 174) 69%,
     rgb(32, 167, 172) 89%
   ) !important;
+  height: 100vh;
 }
 
 .masthead.segment {
@@ -44,12 +45,13 @@ body {
 .masthead h1.ui.header {
   margin-top: 3em;
   margin-bottom: 0;
-  font-size: 4em;
+  font-size: 5em;
   font-weight: normal;
 }
 
 .masthead h2 {
   font-size: 1.7em;
+  margin-bottom: 1em;
   font-weight: normal;
 }
 
