@@ -1,42 +1,45 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Segment, Form, Button } from 'semantic-ui-react';
+import { createEvent, updateEvent } from '../eventActions';
+import cuid from 'cuid';
 
-const emptyEvent = {
+const event = {
   title: '',
   date: '',
+  category: 'culture',
+  description:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
+    'Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus.' +
+    'Sed eget ipsum vel arcu vehicula ullamcorper.',
   city: '',
   venue: '',
-  hostedBy: ''
+  hostedBy: '',
+  hostPhotoURL: 'https://randomuser.me/api/portraits/men/20.jpg',
+  attendees: []
 };
 
 class EventForm extends Component {
-  state = { ...emptyEvent };
+  state = { ...event, id: this.props.match.params.id };
 
   componentDidMount() {
-    if (this.props.selectedEvent) {
-      this.setState({ ...this.props.selectedEvent });
+    let event = {};
+    if (this.state.id && this.props.events.length > 0) {
+      event = this.props.events.find(event => event.id === this.state.id);
     }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { selectedEvent } = nextProps;
-    if (selectedEvent && selectedEvent !== this.state.selectedEvent) {
-      this.setState({ ...selectedEvent });
-    } else {
-      this.setState({ ...emptyEvent });
-    }
+    this.setState({ ...event });
   }
 
   handleChange = e => this.setState({ [e.target.name]: e.target.value });
 
   handleSubmit = e => {
     e.preventDefault();
-    const { addNewEvent, updateEvent } = this.props;
     if (this.state.id) {
-      updateEvent({ ...this.state });
+      this.props.updateEvent({ ...this.state });
     } else {
-      addNewEvent({ ...this.state });
+      this.props.createEvent({ ...this.state, id: cuid() });
     }
+    this.props.history.push('/events');
   };
 
   render() {
@@ -95,7 +98,11 @@ class EventForm extends Component {
             <Button positive type="submit" fluid>
               Submit
             </Button>
-            <Button type="button" fluid onClick={hideForm}>
+            <Button
+              type="button"
+              fluid
+              onClick={() => this.props.history.goBack()}
+            >
               Cancel
             </Button>
           </Button.Group>
@@ -105,4 +112,11 @@ class EventForm extends Component {
   }
 }
 
-export default EventForm;
+const mapStateToProps = state => ({
+  events: state.events
+});
+
+export default connect(
+  mapStateToProps,
+  { createEvent, updateEvent }
+)(EventForm);
