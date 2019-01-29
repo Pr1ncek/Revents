@@ -15,7 +15,6 @@ class EventListItem extends Component {
       attendees,
       id
     } = this.props.event;
-    const { onEventSelected, onDeleteEvent } = this.props;
     return (
       <Segment.Group>
         <Segment>
@@ -53,7 +52,7 @@ class EventListItem extends Component {
             color="red"
             floated="right"
             content="Delete"
-            onClick={onDeleteEvent(id)}
+            onClick={() => this.props.deleteEvent(id)}
           />
           <Button
             as={Link}
