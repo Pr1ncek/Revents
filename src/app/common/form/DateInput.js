@@ -12,7 +12,7 @@ function DateInput({
   ...rest
 }) {
   return (
-    <Form error={touched && !!error} width={width}>
+    <Form.Field error={touched && !!error} width={width}>
       <DatePicker
         {...rest}
         placeholderText={placeholder}
@@ -25,7 +25,7 @@ function DateInput({
           {error}
         </Label>
       )}
-    </Form>
+    </Form.Field>
   );
 }
 
