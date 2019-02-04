@@ -1,32 +1,24 @@
 import React, { Component } from 'react';
-import { Icon } from 'semantic-ui-react';
-import GoogleMapReact from 'google-map-react';
-
-const AnyReactComponent = () => <Icon name="marker" size="big" color="red" />;
+import { Button } from 'semantic-ui-react';
+import { openModal } from '../modals/modalActions';
+import { connect } from 'react-redux';
 
 class TestPlayground extends Component {
-  static defaultProps = {
-    center: {
-      lat: 59.95,
-      lng: 30.33
-    },
-    zoom: 11
-  };
-
   render() {
+    const { openModal } = this.props;
     return (
-      // Important! Always set the container height explicitly
-      <div style={{ height: '300px', width: '100%' }}>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: 'AIzaSyDCTSt_rLjoxGH_pAI71SWqGWq_9XvEbrs' }}
-          defaultCenter={this.props.center}
-          defaultZoom={this.props.zoom}
-        >
-          <AnyReactComponent lat={59.955413} lng={30.337844} text="My Marker" />
-        </GoogleMapReact>
+      <div>
+        <Button
+          color="teal"
+          content="Open Modal"
+          onClick={() => openModal('TestModal', { data: 100 })}
+        />
       </div>
     );
   }
 }
 
-export default TestPlayground;
+export default connect(
+  null,
+  { openModal }
+)(TestPlayground);

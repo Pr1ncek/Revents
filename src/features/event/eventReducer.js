@@ -74,11 +74,11 @@ const deleteEvent = (state, payload) => {
   return [...updatedEvents];
 };
 
-const reducersMap = {
+const mapActionsToReducers = {
   [eventConstants.CREATE_EVENT]: createEvent,
   [eventConstants.UPDATE_EVENT]: updateEvent,
   [eventConstants.DELETE_EVENT]: deleteEvent
 };
 
-const eventReducer = createReducer(initialState, reducersMap);
+const eventReducer = createReducer(initialState, mapActionsToReducers);
 export default eventReducer;
