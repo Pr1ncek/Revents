@@ -1,7 +1,8 @@
 export const eventConstants = {
   CREATE_EVENT: 'CREATE_EVENT',
   UPDATE_EVENT: 'UPDATE_EVENT',
-  DELETE_EVENT: 'DELETE_EVENT'
+  DELETE_EVENT: 'DELETE_EVENT',
+  FETCH_EVENTS: 'FETCH_EVENTS'
 };
 
 export const createEvent = event => {
