@@ -16,7 +16,7 @@ function DateInput({
       <DatePicker
         {...rest}
         placeholderText={placeholder}
-        selected={value ? moment(value) : null}
+        selected={value && moment(value).isValid() ? moment(value) : null}
         onChange={onChange}
         {...restInput}
       />

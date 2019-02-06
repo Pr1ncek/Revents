@@ -40,7 +40,9 @@ const validate = combineValidators({
 
 class EventForm extends Component {
   handleSubmit = values => {
-    values.date = moment(values.date).format();
+    values.date = moment(values.date).isValid()
+      ? moment(values.date).format()
+      : moment(new Date());
     if (this.props.initialValues.id) {
       this.props.updateEvent(values);
       this.props.history.goBack();
