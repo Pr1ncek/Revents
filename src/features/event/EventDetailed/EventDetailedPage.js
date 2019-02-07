@@ -29,7 +29,7 @@ function EventDetailedPage(props) {
 }
 
 const mapStateToProps = state => ({
-  events: state.events
+  events: state.firestore.ordered.events
 });
 
 export default connect(mapStateToProps)(EventDetailedPage);
