@@ -1,13 +1,14 @@
 import React from 'react';
-import { Form, Segment, Button } from 'semantic-ui-react';
+import { Form, Segment, Button, Label } from 'semantic-ui-react';
 import { Field, reduxForm } from 'redux-form';
 import TextInput from '../../../app/common/form/TextInput';
 import { connect } from 'react-redux';
 import { login } from '../authActions';
 
-const LoginForm = ({ login, handleSubmit }) => {
+const LoginForm = ({ login, handleSubmit, error, async }) => {
+  const { loading } = async;
   return (
-    <Form error size="large" onSubmit={handleSubmit(login)}>
+    <Form size="large" onSubmit={handleSubmit(login)}>
       <Segment>
         <Field
           name="email"
@@ -21,7 +22,21 @@ const LoginForm = ({ login, handleSubmit }) => {
           type="password"
           placeholder="password"
         />
-        <Button fluid size="large" color="teal">
+        {error && (
+          <Label
+            basic
+            color="red"
+            style={{
+              width: '100%',
+              textAlign: 'center',
+              padding: '10px',
+              marginBottom: '20px'
+            }}
+          >
+            {error}
+          </Label>
+        )}
+        <Button fluid size="large" color="teal" loading={loading}>
           Login
         </Button>
       </Segment>
@@ -29,7 +44,11 @@ const LoginForm = ({ login, handleSubmit }) => {
   );
 };
 
+const mapStateToProps = state => ({
+  async: state.async
+});
+
 export default connect(
-  null,
+  mapStateToProps,
   { login }
 )(reduxForm({ form: 'loginForm' })(LoginForm));
