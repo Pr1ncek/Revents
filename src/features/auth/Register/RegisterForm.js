@@ -1,12 +1,17 @@
 import React from 'react';
-import { Form, Segment, Button } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+
 import { Field, reduxForm } from 'redux-form';
+import { Form, Segment, Button, Label } from 'semantic-ui-react';
 import TextInput from '../../../app/common/form/TextInput';
 
-const RegisterForm = () => {
+import { registerUser } from '../authActions';
+
+const RegisterForm = ({ registerUser, handleSubmit, error, async }) => {
+  const { loading } = async;
   return (
     <div>
-      <Form size="large">
+      <Form size="large" onSubmit={handleSubmit(registerUser)}>
         <Segment>
           <Field
             name="displayName"
@@ -26,7 +31,21 @@ const RegisterForm = () => {
             component={TextInput}
             placeholder="Password"
           />
-          <Button fluid size="large" color="teal">
+          {error && (
+            <Label
+              basic
+              color="red"
+              style={{
+                width: '100% ',
+                textAlign: 'center',
+                padding: '10px',
+                marginBottom: '20px'
+              }}
+            >
+              {error}
+            </Label>
+          )}
+          <Button fluid size="large" color="teal" loading={loading}>
             Register
           </Button>
         </Segment>
@@ -35,4 +54,11 @@ const RegisterForm = () => {
   );
 };
 
-export default reduxForm({ form: 'registerForm' })(RegisterForm);
+const mapStateToProps = state => ({
+  async: state.async
+});
+
+export default connect(
+  mapStateToProps,
+  { registerUser }
+)(reduxForm({ form: 'registerForm' })(RegisterForm));

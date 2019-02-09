@@ -4,7 +4,6 @@ import { SubmissionError } from 'redux-form';
 
 export const authConstants = {
   LOGIN_USER: 'LOGIN_USER',
-  SIGNOUT_USER: 'SIGNOUT_USER',
   REGISTER_USER: 'REGISTER_USER'
 };
 
@@ -25,6 +24,39 @@ export const login = ({ email = '', password = '' }) => {
   };
 };
 
-export const signout = () => {
-  return { type: authConstants.SIGNOUT_USER };
+export const registerUser = user => async (
+  dispatch,
+  getState,
+  { getFirebase }
+) => {
+  const firebase = getFirebase();
+
+  try {
+    dispatch(asyncActionStart());
+    let createdUser = await firebase
+      .auth()
+      .createUserWithEmailAndPassword(user.email, user.password);
+
+    await createdUser.user.updateProfile({
+      displayName: user.displayName
+    });
+
+    let newUser = {
+      uid: firebase.auth().currentUser.uid,
+      displayName: user.displayName,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    await firebase
+      .firestore()
+      .collection('users')
+      .doc(newUser.uid)
+      .set(newUser);
+      
+    dispatch(closeModal());
+  } catch (error) {
+    console.log(error);
+    throw new SubmissionError({ _error: error.message });
+  } finally {
+    dispatch(asyncActionEnd());
+  }
 };

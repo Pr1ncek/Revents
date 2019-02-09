@@ -27,7 +27,7 @@ const LoginForm = ({ login, handleSubmit, error, async }) => {
             basic
             color="red"
             style={{
-              width: '100%',
+              width: '100% ',
               textAlign: 'center',
               padding: '10px',
               marginBottom: '20px'
