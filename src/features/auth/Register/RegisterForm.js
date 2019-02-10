@@ -1,13 +1,37 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import {
+  combineValidators,
+  isRequired,
+  composeValidators,
+  hasLengthGreaterThan
+} from 'revalidate';
 
 import { Field, reduxForm } from 'redux-form';
-import { Form, Segment, Button, Label } from 'semantic-ui-react';
+import { Form, Segment, Button, Label, Divider } from 'semantic-ui-react';
 import TextInput from '../../../app/common/form/TextInput';
+import SocialLogin from '../SocialLogin/SocialLogin';
 
-import { registerUser } from '../authActions';
+import { registerUser, socialLogin } from '../authActions';
 
-const RegisterForm = ({ registerUser, handleSubmit, error, async }) => {
+const validate = combineValidators({
+  displayName: isRequired('name'),
+  email: isRequired('email'),
+  password: composeValidators(
+    isRequired('password'),
+    hasLengthGreaterThan(5)({ message: 'Must be alteast 6 characters' })
+  )()
+});
+
+const RegisterForm = ({
+  registerUser,
+  handleSubmit,
+  error,
+  async,
+  invalid,
+  submitting,
+  socialLogin
+}) => {
   const { loading } = async;
   return (
     <div>
@@ -45,9 +69,19 @@ const RegisterForm = ({ registerUser, handleSubmit, error, async }) => {
               {error}
             </Label>
           )}
-          <Button fluid size="large" color="teal" loading={loading}>
+          <Button
+            fluid
+            size="large"
+            color="teal"
+            loading={loading}
+            disabled={invalid || submitting}
+          >
             Register
           </Button>
+          <Divider horizontal style={{ textAlign: 'center', padding: '10px' }}>
+            OR
+          </Divider>
+          <SocialLogin socialLogin={socialLogin} />
         </Segment>
       </Form>
     </div>
@@ -60,5 +94,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { registerUser }
-)(reduxForm({ form: 'registerForm' })(RegisterForm));
+  { registerUser, socialLogin }
+)(reduxForm({ form: 'registerForm', validate })(RegisterForm));

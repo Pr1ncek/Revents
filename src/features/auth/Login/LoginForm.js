@@ -1,11 +1,21 @@
 import React from 'react';
-import { Form, Segment, Button, Label } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+
+import { Form, Segment, Button, Label, Divider } from 'semantic-ui-react';
 import { Field, reduxForm } from 'redux-form';
 import TextInput from '../../../app/common/form/TextInput';
-import { connect } from 'react-redux';
-import { login } from '../authActions';
+import SocialLogin from '../SocialLogin/SocialLogin';
 
-const LoginForm = ({ login, handleSubmit, error, async }) => {
+import { login, socialLogin } from '../authActions';
+
+const LoginForm = ({
+  login,
+  handleSubmit,
+  error,
+  async,
+  submitting,
+  socialLogin
+}) => {
   const { loading } = async;
   return (
     <Form size="large" onSubmit={handleSubmit(login)}>
@@ -36,9 +46,19 @@ const LoginForm = ({ login, handleSubmit, error, async }) => {
             {error}
           </Label>
         )}
-        <Button fluid size="large" color="teal" loading={loading}>
+        <Button
+          fluid
+          size="large"
+          color="teal"
+          loading={loading}
+          disabled={submitting}
+        >
           Login
         </Button>
+        <Divider horizontal style={{ textAlign: 'center', padding: '10px' }}>
+          OR
+        </Divider>
+        <SocialLogin socialLogin={socialLogin} />
       </Segment>
     </Form>
   );
@@ -50,5 +70,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { login }
+  { login, socialLogin }
 )(reduxForm({ form: 'loginForm' })(LoginForm));

@@ -41,7 +41,7 @@ export const registerUser = user => async (
       displayName: user.displayName
     });
 
-    let newUser = {
+    let newUserProfile = {
       uid: firebase.auth().currentUser.uid,
       displayName: user.displayName,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -49,13 +49,46 @@ export const registerUser = user => async (
     await firebase
       .firestore()
       .collection('users')
-      .doc(newUser.uid)
-      .set(newUser);
-      
+      .doc(newUserProfile.uid)
+      .set(newUserProfile);
+
     dispatch(closeModal());
   } catch (error) {
     console.log(error);
     throw new SubmissionError({ _error: error.message });
+  } finally {
+    dispatch(asyncActionEnd());
+  }
+};
+
+export const socialLogin = provider => async (
+  dispatch,
+  getState,
+  { getFirebase }
+) => {
+  const firebase = getFirebase();
+  try {
+    dispatch(asyncActionStart());
+    dispatch(closeModal());
+    let user = await firebase.login({
+      provider,
+      type: 'popup'
+    });
+    if (user.additionalUserInfo.isNewUser) {
+      let newUserProfile = {
+        uid: user.user.uid,
+        displayName: user.profile.displayName,
+        photoURL: user.profile.avatarUrl,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      await firebase
+        .firestore()
+        .collection('users')
+        .doc(newUserProfile.uid)
+        .set(newUserProfile);
+    }
+  } catch (error) {
+    console.error(error);
   } finally {
     dispatch(asyncActionEnd());
   }
