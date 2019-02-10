@@ -1,5 +1,7 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import { Grid } from 'semantic-ui-react';
 import SettingsNav from './SettingsNav';
 import AboutPage from './AboutPage';
@@ -7,7 +9,9 @@ import BasicPage from './BasicPage';
 import PhotosPage from './PhotosPage';
 import AccountPage from './AccountPage';
 
-function SettingsDashboard() {
+import { updatePassword } from '../../auth/authActions';
+
+function SettingsDashboard({ async, updatePassword, providerId }) {
   return (
     <Grid>
       <Grid.Column width={12}>
@@ -16,7 +20,16 @@ function SettingsDashboard() {
           <Route path="/settings/basic" component={BasicPage} />
           <Route path="/settings/about" component={AboutPage} />
           <Route path="/settings/photos" component={PhotosPage} />
-          <Route path="/settings/account" component={AccountPage} />
+          <Route
+            path="/settings/account"
+            render={() => (
+              <AccountPage
+                loading={async.loading}
+                updatePassword={updatePassword}
+                providerId={providerId}
+              />
+            )}
+          />
         </Switch>
       </Grid.Column>
       <Grid.Column width={4}>
@@ -26,4 +39,12 @@ function SettingsDashboard() {
   );
 }
 
-export default SettingsDashboard;
+const mapStateToProps = state => ({
+  async: state.async,
+  providerId: state.firebase.auth.providerData[0].providerId
+});
+
+export default connect(
+  mapStateToProps,
+  { updatePassword }
+)(SettingsDashboard);

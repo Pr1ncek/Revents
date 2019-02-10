@@ -17,9 +17,11 @@ import './index.css';
 
 const rootElement = document.getElementById('root');
 
+const store = configureStore();
+
 const render = () => {
   ReactDOM.render(
-    <Provider store={configureStore()}>
+    <Provider store={store}>
       <Router>
         <ScrollToTop>
           <ReduxToastr
@@ -41,7 +43,9 @@ if (module.hot) {
   });
 }
 
-render();
+store.firebaseAuthIsReady.then(() => {
+  render();
+});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
