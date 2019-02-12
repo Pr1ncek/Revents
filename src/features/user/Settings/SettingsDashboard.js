@@ -34,7 +34,16 @@ function SettingsDashboard({
               />
             )}
           />
-          <Route path="/settings/about" component={AboutPage} />
+          <Route
+            path="/settings/about"
+            render={() => (
+              <AboutPage
+                initialValues={userProfile}
+                updateProfile={updateProfile}
+                loading={async.loading}
+              />
+            )}
+          />
           <Route path="/settings/photos" component={PhotosPage} />
           <Route
             path="/settings/account"
