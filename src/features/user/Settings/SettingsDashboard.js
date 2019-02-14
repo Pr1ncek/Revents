@@ -17,7 +17,9 @@ function SettingsDashboard({
   updatePassword,
   providerId,
   userProfile,
-  updateProfile
+  updateProfile,
+  auth,
+  photos
 }) {
   return (
     <Grid>
@@ -44,7 +46,17 @@ function SettingsDashboard({
               />
             )}
           />
-          <Route path="/settings/photos" component={PhotosPage} />
+          <Route
+            path="/settings/photos"
+            render={() => (
+              <PhotosPage
+                loading={async.loading}
+                auth={auth}
+                photos={photos}
+                userProfile={userProfile}
+              />
+            )}
+          />
           <Route
             path="/settings/account"
             render={() => (
@@ -67,7 +79,9 @@ function SettingsDashboard({
 const mapStateToProps = state => ({
   async: state.async,
   providerId: state.firebase.auth.providerData[0].providerId,
-  userProfile: state.firebase.profile
+  userProfile: state.firebase.profile,
+  auth: state.firebase.auth,
+  photos: state.firestore.ordered.photos
 });
 
 export default connect(

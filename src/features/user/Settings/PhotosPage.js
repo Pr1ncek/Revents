@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { firestoreConnect } from 'react-redux-firebase';
 
 import {
   Image,
@@ -32,10 +34,7 @@ class PhotosPage extends Component {
 
   uploadImage = async () => {
     try {
-      await this.props.uploadProfileImage(
-        this.state.image,
-        this.state.fileName
-      );
+      await this.props.uploadProfileImage(this.state.image);
       this.resetCrop();
       toastr.success('Success', 'Photo has been uploaded!');
     } catch (error) {
@@ -43,7 +42,8 @@ class PhotosPage extends Component {
     }
   };
 
-  resetCrop = () => this.setState({ file: [], image: {} });
+  resetCrop = () =>
+    this.setState({ file: [], image: {}, files: [], fileName: '' });
 
   cropImage = () => {
     if (typeof this.refs.cropper.getCroppedCanvas() === 'undefined') return;
@@ -55,8 +55,12 @@ class PhotosPage extends Component {
   };
 
   render() {
+    const { loading, photos, auth, userProfile } = this.props;
+    let filteredPhotos = photos
+      ? photos.filter(photo => photo.url !== userProfile.photoURL)
+      : [];
     return (
-      <Segment>
+      <Segment style={{ padding: '25px' }}>
         <Header dividing size="large" content="Your Photos" />
         <Grid>
           <Grid.Row />
@@ -118,11 +122,14 @@ class PhotosPage extends Component {
                     positive
                     icon="check"
                     onClick={this.uploadImage}
+                    disabled={loading}
+                    loading={loading}
                   />
                   <Button
                     style={{ width: '100px' }}
                     icon="close"
                     onClick={this.resetCrop}
+                    disabled={loading}
                   />
                 </Button.Group>
               </div>
@@ -135,19 +142,22 @@ class PhotosPage extends Component {
 
         <Card.Group itemsPerRow={5}>
           <Card>
-            <Image src="https://randomuser.me/api/portraits/women/20.jpg" />
-            <Button positive>Main Photo</Button>
+            <Image src={userProfile.photoURL} />
+            <Button positive disabled={true}>
+              Main Photo
+            </Button>
           </Card>
-
-          <Card>
-            <Image src="https://randomuser.me/api/portraits/women/20.jpg" />
-            <div className="ui two buttons">
-              <Button basic color="green">
-                Main
-              </Button>
-              <Button basic icon="trash" color="red" />
-            </div>
-          </Card>
+          {filteredPhotos.map(photo => (
+            <Card key={photo.id}>
+              <Image src={photo.url} />
+              <div className="ui two buttons">
+                <Button basic color="green">
+                  Main
+                </Button>
+                <Button basic icon="trash" color="red" />
+              </div>
+            </Card>
+          ))}
         </Card.Group>
       </Segment>
     );
@@ -158,7 +168,21 @@ const headerStyles = {
   marginBottom: '25px'
 };
 
-export default connect(
-  null,
-  { uploadProfileImage }
+const query = ({ auth }) => {
+  return [
+    {
+      collection: 'users',
+      doc: auth.uid,
+      subcollections: [{ collection: 'photos' }],
+      storeAs: 'photos'
+    }
+  ];
+};
+
+export default compose(
+  connect(
+    null,
+    { uploadProfileImage }
+  ),
+  firestoreConnect(auth => query(auth))
 )(PhotosPage);
