@@ -6,7 +6,7 @@ import rootReducer from '../reducers/rootReducer';
 import firebase from '../config/firebase';
 // prettier-ignore
 import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
-import { reduxFirestore, getFireStore } from 'redux-firestore';
+import { reduxFirestore, getFirestore } from 'redux-firestore';
 
 const rrfConfig = {
   userProfile: 'users',
@@ -16,7 +16,7 @@ const rrfConfig = {
 };
 
 export const configureStore = (initialState = {}) => {
-  const middlewares = [thunk.withExtraArgument({ getFirebase, getFireStore })];
+  const middlewares = [thunk.withExtraArgument({ getFirebase, getFirestore })];
   const middlewareEnhancer = applyMiddleware(...middlewares);
 
   const storeEnhancer = [middlewareEnhancer];

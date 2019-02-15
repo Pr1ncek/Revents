@@ -16,9 +16,10 @@ import {
 import Dropzone from 'react-dropzone';
 import Cropper from 'react-cropper';
 import { toastr } from 'react-redux-toastr';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
 import 'cropperjs/dist/cropper.css';
 
-import { uploadProfileImage } from '../userActions';
+import { uploadProfileImage, deletePhoto, setMainPhoto } from '../userActions';
 
 class PhotosPage extends Component {
   state = {
@@ -54,11 +55,27 @@ class PhotosPage extends Component {
     }, 'image/jpeg');
   };
 
+  handlePhotoDelete = photo => async () => {
+    try {
+      this.props.deletePhoto(photo);
+    } catch (error) {
+      toastr.error('Error', error.message);
+    }
+  };
+
+  handleSetMainPhoto = photo => () => {
+    try {
+      this.props.setMainPhoto(photo);
+    } catch (error) {
+      toastr.error('Error', error.message);
+    }
+  };
+
+  getFilteredPhotos = (photos, userProfile) =>
+    photos.filter(photo => photo.url !== userProfile.photoURL);
+
   render() {
-    const { loading, photos, auth, userProfile } = this.props;
-    let filteredPhotos = photos
-      ? photos.filter(photo => photo.url !== userProfile.photoURL)
-      : [];
+    const { loading, photos, userProfile } = this.props;
     return (
       <Segment style={{ padding: '25px' }}>
         <Header dividing size="large" content="Your Photos" />
@@ -139,26 +156,38 @@ class PhotosPage extends Component {
 
         <Divider />
         <Header sub color="teal" content="All Photos" style={headerStyles} />
-
-        <Card.Group itemsPerRow={5}>
-          <Card>
-            <Image src={userProfile.photoURL} />
-            <Button positive disabled={true}>
-              Main Photo
-            </Button>
-          </Card>
-          {filteredPhotos.map(photo => (
-            <Card key={photo.id}>
-              <Image src={photo.url} />
-              <div className="ui two buttons">
-                <Button basic color="green">
-                  Main
-                </Button>
-                <Button basic icon="trash" color="red" />
-              </div>
+        {!photos ? (
+          <LoadingComponent inverted={true} />
+        ) : (
+          <Card.Group itemsPerRow={5}>
+            <Card>
+              <Image src={userProfile.photoURL} />
+              <Button positive disabled={true}>
+                Main Photo
+              </Button>
             </Card>
-          ))}
-        </Card.Group>
+            {this.getFilteredPhotos(photos, userProfile).map(photo => (
+              <Card key={photo.id}>
+                <Image src={photo.url} />
+                <div className="ui two buttons">
+                  <Button
+                    basic
+                    color="green"
+                    onClick={this.handleSetMainPhoto(photo)}
+                  >
+                    Main
+                  </Button>
+                  <Button
+                    basic
+                    icon="trash"
+                    color="red"
+                    onClick={this.handlePhotoDelete(photo)}
+                  />
+                </div>
+              </Card>
+            ))}
+          </Card.Group>
+        )}
       </Segment>
     );
   }
@@ -182,7 +211,7 @@ const query = ({ auth }) => {
 export default compose(
   connect(
     null,
-    { uploadProfileImage }
+    { uploadProfileImage, deletePhoto, setMainPhoto }
   ),
   firestoreConnect(auth => query(auth))
 )(PhotosPage);
