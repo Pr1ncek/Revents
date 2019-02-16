@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container } from 'semantic-ui-react';
 import { Route, Switch } from 'react-router-dom';
+
 import EventDashboard from '../../features/event/EventDashboard/EventDashboard';
 import Navbar from '../../features/nav/Navbar/Navbar';
 import EventForm from '../../features/event/EventForm/EventForm';
@@ -43,7 +44,6 @@ class App extends Component {
       </React.Fragment>
     );
   }
-  q;
 }
 
 export default App;
